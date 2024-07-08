@@ -1,0 +1,30 @@
+.message-board {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 280px;
+    width: auto; 
+    /* overflow-y: auto;  */
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
+.message {
+    transition: opacity 1s ease-in-out;
+    opacity: 0;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 900;
+    font-size: 30px;
+    border: none !important;
+    padding: 0px !important;
+}
+
+
+.message-visible {
+    opacity: 1; /* 完全可见状态 */
+}

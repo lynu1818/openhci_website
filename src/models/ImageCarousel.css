@@ -1,0 +1,25 @@
+.photo-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+.carousel-item {
+    background-color: transparent; /* 使背景透明 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 40px;
+    height: 100%;
+}
+  
+.custom-image {
+    height: 400px;   /* 固定高度為 500px */
+    width: auto;     /* 寬度自動調整 */
+    object-fit: contain; /* 保持圖片內容完整 */
+}
+  
