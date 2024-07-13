@@ -22,4 +22,25 @@
     width: auto;     /* 寬度自動調整 */
     object-fit: contain; /* 保持圖片內容完整 */
 }
-  
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-spinner {
+    position: absolute;
+    width: 100%;
+    height: 50px;
+}
+
+.spinner-border {
+    width: 100px !important; /* Increase size */
+    height: 100px !important; /* Increase size */
+    border-width: 10px !important; /* Increase border thickness */
+    color: #1C2086; /* Change color to blue */
+}

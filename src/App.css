@@ -100,6 +100,19 @@
   font-size: 40px;
 }
 
+.text-white {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 900;
+}
+
+.text-white-sm {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: white;
+}
+
 .life-tips {
   color: #1C2086;
   font-family: 'Zen Maru Gothic', sans-serif;
@@ -131,16 +144,16 @@
   text-align: right;
 }
 
-.bottom-left {
+/* .bottom-left {
   width: 180px;
   height: 136px;
   border: 2.5px solid #1C2086;
-  border-radius: 34px;
+  border-radius: 34px; */
   /* background-color: #1C2086; */
   /* margin-top: 20px; */
-  margin-left: 20px;
+  /* margin-left: 20px;
   padding: 0px !important;
-}
+} */
 
 .bottom-middle {
   padding: 0px !important;
@@ -149,9 +162,153 @@
   justify-content: center; /* 水平居中 */
 }
 
+.box {
+  position: relative;
+  width: 168px;
+  height: 124px;
+  border: 2.5px solid #1C2086;
+  border-radius: 20px;
+  padding: 0 !important;
+  background-color: white;
+  margin-top: 15px;
+}
+
+.box-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0 10px;
+}
+
+.blue-box {
+  margin: 0px;
+  position: absolute;
+  width: 30px;
+  height: 63px;
+  background-color: #1C2086;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blue-box-left {
+  margin: 0px;
+  position: absolute;
+  width: 50px;
+  height: 41.5px;
+  background-color: #1C2086;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blue-text {
+  color: #1C2086;
+  width: 50%;
+  text-align: center;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 900;
+}
+
+.top-right {
+  top: -2.5px;
+  right: -2.5px;
+  border-top-right-radius: 20px;
+}
+
+.bottom-left {
+  bottom: -2.5px;
+  left: -2.5px;
+  border-bottom-left-radius: 20px;
+}
+
+.top-left {
+  top: -2.5px;
+  left: -2.5px;
+  border-top-left-radius: 20px;
+}
+
+.middle-left {
+  top: 40px;
+  left: -2.5px;
+}
+
+.center-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  color: #1C2086 !important;
+  border-top: 2px solid #1C2086 !important;
+  transform: translateY(-50%);
+}
+
+.center-line-container {
+  display: flex;
+  align-items: center;
+  height: 2px;
+}
+
+
+.center-line-right-up {
+  position: absolute;
+  top: 33.3%;
+  left: 32%;
+  width: 80%;
+  color: #1C2086 !important;
+  border-top: 2px solid #1C2086 !important;
+  transform: translateY(-50%);
+}
+
+.center-line-left-up {
+  position: absolute;
+  top: 33.3%;
+  left: -2.5px;
+  width: 30%;
+  color: white !important;
+  border-top: 2px solid white !important;
+  transform: translateY(-50%);
+}
+
+.center-line-right-down {
+  position: absolute;
+  top: 66.7%;
+  left: 32%;
+  width: 80%;
+  color: #1C2086 !important;
+  border-top: 2px solid #1C2086 !important;
+  transform: translateY(-50%);
+}
+
+.center-line-left-down {
+  position: absolute;
+  top: 66.7%;
+  left: -2.5px;
+  width: 30%;
+  color: white !important;
+  border-top: 2px solid white !important;
+  transform: translateY(-50%);
+}
+
+
+.text-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px; /* 調整內邊距以適應文本 */
+  box-sizing: border-box;
+}
+
+
 .bottom-right {
-  width: 180px;
-  height: 136px;
+  width: 168px;
+  height: 124px;
   border: 2.5px solid #1C2086;
   border-radius: 34px;
   /* background-color: #1C2086; */
@@ -169,7 +326,7 @@
 
 .date-text {
   font-family: 'Besley', serif;
-  font-size: 350px;
+  font-size: 300px;
   font-weight: 700;
   color: #1C2086;
 }
@@ -190,6 +347,11 @@
 }
 
 
+.text-row {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
 
 /* App.css */
 
@@ -209,4 +371,27 @@
   opacity: 0;
   transform: scale(0.95);
   transition: opacity 300ms, transform 300ms;
+}
+
+.p-4-left-right {
+  padding-left: 28px !important;
+  padding-right: 1px !important;
+}
+
+.p-4-right-left {
+  padding-left: 70px !important;
+  padding-right: 4px !important;
+}
+
+.p-left {
+  padding-left: 75px !important;
+  padding-right: 5px !important;
+}
+
+.fixed-height-row {
+  height: 60px;
+}
+
+.fixed-height-row-left {
+  height: 40px;
 }

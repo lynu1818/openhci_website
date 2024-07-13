@@ -1,96 +1,105 @@
 import "./App.css";
-import { Container, Row, Col, Carousel, Button } from "react-bootstrap";
-import ImageCarousel from "./models/ImageCarousel";
-import MessageBoard from "./models/MessageBoard";
+import { Container, Row, Col} from "react-bootstrap";
+import ImageCarousel from "./components/ImageCarousel";
+import MessageBoard from "./components/MessageBoard";
 import { useState, useEffect } from "react";
 import { ref, get, onValue } from "firebase/database";
 import { database } from "./services/firebaseConfig";
 import { format, parseISO, subDays } from "date-fns";
 import { zhTW } from "date-fns/locale";
-
-const url = {
-	"1-1": "",
-	"1-2": "",
-	"2-1": "",
-	"2-2": "",
-	"3-1": "",
-	"3-2": "",
-	"4-1": "",
-	"4-2": "",
-	"5-1": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F5-1.png?alt=media&token=a9d515d8-2cd0-4137-860c-e8a0a417200d",
-	"5-2": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F5-2.png?alt=media&token=975e4b29-4e0e-4c15-af9c-d51e572d9de2",
-	"6-1": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F6-1.png?alt=media&token=14a10ddd-0d36-4199-a946-e42b462a8c8c",
-	"6-2": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F6-2.png?alt=media&token=abeb3a1a-6462-45ee-939a-00a815b1beae",
-	"7-1": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F7-1.png?alt=media&token=71a19e1e-fe12-4e8e-9aa1-7f6f4ffdb878",
-	"7-2": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F7-2.png?alt=media&token=dac71c83-edad-4927-9311-29373b4fada1",
-	"8-1": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F8-1.png?alt=media&token=491eeb70-e007-4f48-ae61-73ad067b31aa",
-	"8-2": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F8-2.png?alt=media&token=88a8d7cd-f6ed-48be-85b7-f27badaeca6a",
-	"9-1": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F9-1.png?alt=media&token=13b9e067-95c9-4dcc-9552-8d080065401b",
-	"9-2": "https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2F9-2.png?alt=media&token=56cdae03-9ad2-4b36-819e-ceddbf040a47",
-};
-
-const lunarDate = {
-	1: "",
-	2: "",
-	3: "",
-	4: "",
-	5: "五月三十日",
-	6: "六月初一",
-	7: "六月初二",
-	8: "六月初三",
-	9: "六月初四",
-	10: "六月初五",
-	11: "六月初六",
-	12: "六月初七",
-};
+import styled from "styled-components";
 
 function App() {
 	const [today, setToday] = useState(new Date());
+	const [dayToShow, setDayToShow] = useState(new Date());
 	const [weekDay, setWeekDay] = useState("");
 	const [torn, setTorn] = useState(false);
+	const [data, setData] = useState({
+		lunar_date: "",
+		ganzhi: "",
+		yi: [],
+		ji: [],
+		good_times: [],
+		jieqi: "",
+		sha: "",
+	});
 
-	const lunarKey = torn ? format(today, "d") : format(subDays(today, 1), "d");
+	const renderTexts = (texts) => {
+		const chunks = [];
+		let size = 1;
 
-	const imageKeyLeft = torn
-		? `${format(today, "d")}-1`
-		: `${format(subDays(today, 1), "d")}-1`;
-	const imageKeyRight = torn
-		? `${format(today, "d")}-2`
-		: `${format(subDays(today, 1), "d")}-2`;
+		if (typeof texts === "string") {
+			texts = [texts];
+		}
 
-	console.log("lunarKey: ", lunarKey);
+		if (texts.length > 1 && texts.length <= 4) size = 2;
+		else if (texts.length > 4 && texts.length <= 6) size = 3;
+
+		for (let i = 0; i < texts.length; i += size) {
+			chunks.push(texts.slice(i, i + size));
+		}
+
+		return chunks.map((chunk, index) => (
+			<Row key={index} className="w-100 text-row">
+				{chunk.map((text, idx) => (
+					<StyledCol
+						key={idx}
+						size={size}
+						className="blue-text d-flex justify-content-center align-items-center p-0 m-0"
+					>
+						{text}
+					</StyledCol>
+				))}
+			</Row>
+		));
+	};
+
+	const StyledCol = styled(Col)`
+		font-size: ${(props) =>
+			props.size === 1 ? "16px" : props.size === 2 ? "16px" : "13px"};
+		margin: 1px;
+	`;
 
 	useEffect(() => {
-		const dateRef = ref(database, "date");
 		const tornRef = ref(database, "torn");
 
-		const unsubscribeDate = onValue(dateRef, async (snapshot) => {
-			const newDateStr =
-				snapshot.val() || format(new Date(), "yyyy-MM-dd");
-			const newDate = parseISO(newDateStr);
-			setToday(newDate);
-			const wd = torn
-				? format(newDate, "eeee", { locale: zhTW })
-				: format(subDays(newDate, 1), "eeee", { locale: zhTW });
-			setWeekDay(wd); // 設置星期幾，使用繁體中文
-			// TODO: 設置農曆日期
-		});
+		const fetchData = (date) => {
+			const dataRef = ref(database, `date_info/${date}`);
+			onValue(dataRef, (snapshot) => {
+				const data = snapshot.val();
+				if (data) {
+					setData(data);
+				}
+			});
+		};
 
-		const unsubscribeTorn = onValue(tornRef, async (snapshot) => {
-			setTorn(snapshot.val());
+		const updateDayToShow = (isTorn) => {
+			const currentDate = format(today, "yyyy-MM-dd");
+			const previousDate = format(subDays(today, 1), "yyyy-MM-dd");
+			const dateToShow = isTorn ? today : subDays(today, 1);
+			const dateString = isTorn ? currentDate : previousDate;
+			fetchData(dateString);
+			setDayToShow(dateToShow);
+			const wd = format(dateToShow, "eeee", { locale: zhTW });
+			setWeekDay(wd);
+		};
+
+		const unsubscribeTorn = onValue(tornRef, (snapshot) => {
+			const isTorn = snapshot.val();
+			setTorn(isTorn);
+			updateDayToShow(isTorn);
 		});
 
 		return () => {
-			unsubscribeDate();
 			unsubscribeTorn();
 		};
-	}, []);
+	}, [today]);
 
 	return (
 		<Container className="p-3">
 			<Row className="mb-3 align-items-center">
 				<Col className="text-center">
-					<ImageCarousel />
+					<ImageCarousel dayToShow={dayToShow}/>
 				</Col>
 			</Row>
 			<Row className="">
@@ -101,77 +110,144 @@ function App() {
 					<Row className="d-flex align-items-start">
 						<Col className="text-right">
 							<span className="year-text">
-								{torn
-									? format(today, "yyyy") - 1911
-									: format(subDays(today, 1), "yyyy") - 1911}
+								{format(dayToShow, "yyyy") - 1911}
 							</span>
 							<span className="year-text-label">年</span>
 						</Col>
 					</Row>
-					<div className="chinese-year-text">歲次甲辰</div>
+					<div className="chinese-year-text">歲次{data.ganzhi}</div>
 					<div className="custom-box">
 						<span className="custom-box-text">農小</span>
 					</div>
 					<Row className="text-center">
 						<Col className="">
 							<div className="vertical-text">
-								{lunarDate[lunarKey]}
+								{data.lunar_date}
 							</div>
 							{/* TODO: 改成動態*/}
 						</Col>
 					</Row>
 				</Col>
 				<Col md={6} className="text-center date-text-col">
-					<div className="date-text">
-						{torn
-							? format(today, "d")
-							: format(subDays(today, 1), "d")}
-					</div>
+					<div className="date-text">{format(dayToShow, "d")}</div>
 				</Col>
 				<Col md={3} className="text-right">
 					<Row className="justify-content-end">
 						<Col className="text-right">
 							<span className="month-text">
-								{torn
-									? format(today, "M")
-									: format(subDays(today, 1), "M")}
+								{format(dayToShow, "M")}
 							</span>
 							<span className="month-text-label">月</span>
 						</Col>
 					</Row>
 					<div className="life-tips text-center">生活小叮嚀</div>
 					<hr className="dashed-hr" />
-					<MessageBoard />
-					{/* <Col className="d-flex flex-row justify-content-center align-items-center">
-						<span className="text-center voice-reply-text">
-							錄音回覆一下
-						</span>
-						<img
-							className="d-block arrow-img"
-							src="https://firebasestorage.googleapis.com/v0/b/openhci-880b9.appspot.com/o/default%2Farrow.png?alt=media&token=1a1fd111-72ab-40a5-b483-fff2211a28fa"
-							alt="arrow"
-						/>
-					</Col> */}
+					<MessageBoard dayToShow={dayToShow}/>
 				</Col>
 			</Row>
 			<Row>
 				<Col md={4} className="">
-					<img src={url[imageKeyLeft]} alt="left box" />
+					<div className="box">
+						<Row className="fixed-height-row">
+							<Col
+								md={9}
+								className="d-flex flex-wrap p-4-left-right m-0 box-content order-md-1"
+							>
+								{renderTexts(
+									data.ji.slice(
+										0,
+										Math.min(data.ji.length, 6)
+									)
+								)}
+							</Col>
+							<Col
+								md={3}
+								className="d-flex justify-content-center align-items-center blue-box top-right order-md-2"
+							>
+								<div className="text-white">不宜</div>
+							</Col>
+						</Row>
+						<Row>
+							<div class="center-line"></div>
+						</Row>
+						<Row className="fixed-height-row">
+							<Col
+								md={3}
+								className="d-flex justify-content-center align-items-center blue-box bottom-left order-md-1"
+							>
+								<div className="text-white">宜</div>
+							</Col>
+							<Col className="d-flex flex-wrap p-4-right-left m-0 box-content order-md-2">
+								{renderTexts(
+									data.yi.slice(
+										0,
+										Math.min(data.yi.length, 6)
+									)
+								)}
+							</Col>
+						</Row>
+					</div>
 				</Col>
 				<Col md={4} className="chinese-date bottom-middle text-center">
-					<div className="chinese-date">
-						{torn
-							? format(today, "eeee", {
-									locale: zhTW,
-							  })
-							: format(subDays(today, 1), "eeee", {
-									locale: zhTW,
-							  })}
-					</div>{" "}
-					{/* TODO: 改成動態*/}
+					<div className="chinese-date">{weekDay}</div>{" "}
 				</Col>
 				<Col md={4} className="align-items-end  d-flex flex-column">
-					<img src={url[imageKeyRight]} alt="right box" />
+					<div className="box">
+						<Row className="fixed-height-row-left">
+							<Col
+								md={4}
+								className="d-flex justify-content-center align-items-center blue-box-left top-left p-0 order-md-1"
+							>
+								<div className="text-white-sm">節氣</div>
+							</Col>
+							<Col className="d-flex flex-wrap p-left m-0 box-content">
+								{renderTexts(
+									data.jieqi.slice(
+										0,
+										Math.min(data.jieqi.length, 6)
+									)
+								)}
+							</Col>
+						</Row>
+						<Row className="center-line-container">
+							<Col md={4} className="center-line-left-up"></Col>
+							<Col md={8} className="center-line-right-up"></Col>
+						</Row>
+						<Row className="fixed-height-row-left">
+							<Col
+								md={4}
+								className="d-flex justify-content-center align-items-center blue-box-left middle-left p-0 order-md-1"
+							>
+								<div className="text-white-sm">吉時</div>
+							</Col>
+							<Col className="d-flex flex-wrap p-left m-0 box-content">
+								{renderTexts(
+									data.good_times.join(" ").slice(
+										0,
+										Math.min(data.good_times.join(" ").length, 7)
+									)
+								)}
+							</Col>
+						</Row>
+						<Row className="center-line-container">
+							<Col md={4} className="center-line-left-down"></Col>
+							<Col
+								md={8}
+								className="center-line-right-down"
+							></Col>
+						</Row>
+						<Row className="fixed-height-row-left">
+							<Col
+								md={4}
+								className="d-flex justify-content-center align-items-center blue-box-left bottom-left"
+							>
+								<div className="text-white-sm">煞</div>
+							</Col>
+							<Col className="d-flex flex-wrap p-left m-0 box-content">
+								{renderTexts(data.sha)}
+							</Col>
+						</Row>
+					</div>
 				</Col>
 			</Row>
 		</Container>
