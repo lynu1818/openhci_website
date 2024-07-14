@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Carousel, Col , Spinner} from "react-bootstrap";
+import { Carousel, Col, Spinner } from "react-bootstrap";
 import { database } from "../services/firebaseConfig";
 import "./ImageCarousel.css";
 import { ref, get, onValue } from "firebase/database";
@@ -74,7 +74,10 @@ function ImageCarousel({ dayToShow }) {
 
 		fetchImages();
 
-		const formattedDate = format(new Date(dayToShow), "yyyy-MM-dd");
+		const formattedDate = format(
+			new Date(dayToShow),
+			"yyyy-MM-dd-HH-mm-ss"
+		);
 
 		const imagesRef = ref(database, `image_messages/${formattedDate}`);
 		const unsubscribe = onValue(imagesRef, (snapshot) => {
@@ -97,7 +100,7 @@ function ImageCarousel({ dayToShow }) {
 		<div className="carousel-container">
 			{loading ? (
 				<div className="loading-spinner">
-					<Spinner animation="border" className="spinner-border"/>
+					<Spinner animation="border" className="spinner-border" />
 				</div>
 			) : (
 				<Carousel>
