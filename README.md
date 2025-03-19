@@ -8,14 +8,6 @@ The site is deployed on Firebase Hosting.
 
 ## Setup
 
-### Prerequisites
-
-- A LINE Developers account with a Messaging API channel
-- A Firebase project (Realtime DB + Cloud Messaging enabled)
-- [Ngrok](https://ngrok.com/) for local webhook testing
-
-### Installation
-
 1. Clone the repository:
 
    ```bash
